@@ -14,7 +14,10 @@ router.get('/', [auth.verifyToken, auth.verifyUser], async (req, res) => {
     try {
         await NotesMaster.findOneAndUpdate({ userId: id }, {}, { upsert: true, new: true }).populate({
             path: 'notes',
-            select: { title: 1, createdAt: 1, updatedAt: 1 }
+            select: { title: 1, createdAt: 1, updatedAt: 1 },
+            options: {
+                sort: {createdAt: -1}
+            }
         }).then(data => {
             const { userId, ...notesInfo } = data.toObject()
             return res.status(200).json({
